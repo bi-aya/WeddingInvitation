@@ -34,7 +34,8 @@
     .app-shell {
       position: relative;
       width: 100%;
-      height: calc(100 * min(var(--vh, 1vh), 1vh));
+      height: 100vh; /* Utilisation de 100vh standard */
+      height: 100dvh; /* Utilisation de dynamic viewport height pour mobile */
       max-width: 900px;
       margin: 0 auto;
       display: flex;
@@ -265,10 +266,14 @@
       border: 1px solid var(--gold);
       border-radius: 12px;
       box-shadow: 0 12px 40px rgba(162, 90, 107, 0.15);
-      overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s ease;
+      
+      /* AJOUTS POUR MOBILE : Hauteur max et scroll si l'écran est trop petit */
       width: 100%;
-      min-height: clamp(380px, 70vh, 580px); /* Réduit la hauteur minimale */
+      min-height: clamp(380px, 70vh, 580px); 
+      overflow-y: auto; 
+      overflow-x: hidden;
+      
+      transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s ease;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -280,30 +285,40 @@
       z-index: 20 !important;
     }
 
+    /* Masquer la scrollbar pour faire plus propre, tout en gardant le scroll */
+    .invitation-card-el::-webkit-scrollbar {
+      display: none;
+    }
+    .invitation-card-el {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+
     /* Décorations Florales (Aquarelle PNG) */
     .floral-bg {
       position: absolute;
-      width: clamp(120px, 30vw, 180px);
+      width: clamp(100px, 25vw, 150px); /* Légèrement réduit pour mobile */
       pointer-events: none;
       opacity: 0.95;
       z-index: 0;
       object-fit: contain;
     }
     .floral-top-left { 
-      top: -15px; 
-      left: -15px; 
+      top: -10px; 
+      left: -10px; 
       transform: rotate(0deg); 
     }
     .floral-bottom-right { 
-      bottom: -15px; 
-      right: -15px; 
+      bottom: -10px; 
+      right: -10px; 
       transform: rotate(180deg); 
     }
 
     .card-content {
       position: relative;
       z-index: 1;
-      padding: clamp(24px, 6vw, 40px);
+      /* Padding réduit pour gagner de la place en hauteur */
+      padding: clamp(16px, 4vw, 30px); 
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -314,11 +329,11 @@
     .quranic-verse {
       color: var(--gold);
       text-align: center;
-      font-size: clamp(18px, 3vw, 24px);
-      line-height: 1.8;
-      padding: 15px;
-      margin: 10px auto;
-      max-width: 90%;
+      font-size: clamp(14px, 3.5vw, 20px); /* Réduit pour mobile */
+      line-height: 1.6;
+      padding: 8px; /* Réduit */
+      margin: 8px auto; /* Réduit */
+      max-width: 95%;
       border-top: 1px solid rgba(212, 175, 55, 0.4);
       border-bottom: 1px solid rgba(212, 175, 55, 0.4);
     }
@@ -327,7 +342,7 @@
       width: 50%;
       height: 1px;
       background: var(--gold);
-      margin: 20px auto;
+      margin: 15px auto; /* Marge réduite */
       opacity: 0.4;
     }
 
@@ -335,8 +350,9 @@
     .countdown-timer {
       display: flex;
       justify-content: center;
-      gap: clamp(8px, 2vw, 16px);
-      margin-top: 20px;
+      gap: clamp(6px, 2vw, 12px); /* Espace réduit */
+      margin-top: 15px; /* Marge réduite */
+      padding-bottom: 10px;
     }
 
     .countdown-box {
@@ -344,8 +360,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: clamp(56px, 15vw, 75px);
-      height: clamp(56px, 15vw, 75px);
+      width: clamp(50px, 14vw, 70px); /* Boîtes légèrement plus petites */
+      height: clamp(50px, 14vw, 70px);
       background: var(--white);
       border: 1px solid rgba(212, 175, 55, 0.5);
       border-radius: 8px;
@@ -354,19 +370,19 @@
 
     .countdown-number {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(20px, 5vw, 28px);
+      font-size: clamp(16px, 4.5vw, 24px); /* Police réduite */
       font-weight: 700;
       color: var(--rose-dark);
       line-height: 1;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .countdown-label {
-      font-size: clamp(9px, 2vw, 11px);
+      font-size: clamp(8px, 1.8vw, 10px);
       color: var(--gold);
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
     /* Controls Overlay */
@@ -446,14 +462,12 @@
 <body>
   <div class="app-shell">
     
-    <!-- FLEURS EN ARRIÈRE-PLAN (NOUVEAU) -->
     <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" 
-         style="position: absolute; top: 0; left: 0; width: 250px; opacity: 0.6; pointer-events: none; z-index: 0;" />
+         style="position: absolute; top: 0; left: 0; width: clamp(150px, 40vw, 250px); opacity: 0.6; pointer-events: none; z-index: 0;" />
          
     <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" 
-         style="position: absolute; bottom: 0; right: 0; width: 250px; opacity: 0.6; pointer-events: none; z-index: 0; transform: rotate(180deg);" />
+         style="position: absolute; bottom: 0; right: 0; width: clamp(150px, 40vw, 250px); opacity: 0.6; pointer-events: none; z-index: 0; transform: rotate(180deg);" />
          
-    <!-- Envelope -->
     <div class="envelope-wrapper" id="envelope-wrapper" onclick="openEnvelope()">
       <div class="envelope" id="envelope">
         <div class="envelope-seal">
@@ -474,31 +488,28 @@
       </div>
     </div>
 
-    <!-- Cards -->
     <div class="cards-container" id="cards-container">
       <div class="px-4 h-full flex items-center" style="width: 100%;">
         <div class="gallery-wrapper">
           <div class="relative">
             <div class="gallery-track" id="gallery-track">
               
-              <!-- Card 1: Invitation -->
               <div class="gallery-card" data-card="0">
                 <div class="invitation-card-el card-delay-1 max-w-full mx-auto">
                   
-                  <!-- Illustrations Florales Aquarelles -->
                   <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" alt="Floral decor" class="floral-bg floral-top-left" />
                   <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" alt="Floral decor" class="floral-bg floral-bottom-right" />
                   
                   <div class="card-content">
-                    <p class="text-xs font-bold uppercase tracking-widest text-center" style="color: var(--rose-dark); margin-bottom: 10px; letter-spacing: 2px;">
+                    <p class="text-xs font-bold uppercase tracking-widest text-center" style="color: var(--rose-dark); margin-bottom: 8px; letter-spacing: 1px; font-size: clamp(10px, 2.5vw, 12px);">
                       Together with their families
                     </p>
                     
-                    <h1 class="font-playfair text-center" style="color: var(--rose-dark); margin: 0; font-size: clamp(40px, 8vw, 65px); line-height: 1.1;">
+                    <h1 class="font-playfair text-center" style="color: var(--rose-dark); margin: 0; font-size: clamp(38px, 9vw, 65px); line-height: 1.1;">
                       Maryam<br><span style="font-size: 0.5em; color: var(--gold); font-family: 'Montserrat', sans-serif;">&</span><br>Mehdi
                     </h1>
                     
-                    <p class="text-xs font-bold uppercase tracking-widest text-center" style="color: var(--rose-dark); margin: 10px 0 5px 0; letter-spacing: 2px;">
+                    <p class="text-xs font-bold uppercase tracking-widest text-center" style="color: var(--rose-dark); margin: 10px 0 5px 0; letter-spacing: 1px; font-size: clamp(10px, 2.5vw, 12px);">
                       Invite you to celebrate their wedding
                     </p>
 
@@ -507,43 +518,38 @@
                     </div>
                     
                     <div style="text-align: center; margin-top: auto;">
-                      <p class="font-bold uppercase tracking-widest" style="color: var(--rose-dark); margin: 0 0 8px 0; font-size: 16px;">Sunday, July 26, 2026</p>
-                      <p class="font-bold uppercase tracking-widest" style="color: var(--rose-dark); margin: 0 0 8px 0; font-size: 16px;">At 3:00 PM</p>
-                      <p class="font-bold uppercase tracking-widest" style="color: var(--gold); margin: 0 0 8px 0; font-size: 16px;"> Kassr lala laaroussa</p>
-                      <p style="color: var(--charcoal); margin: 0; font-size: 14px; line-height: 1.6;">Angle Boulevard New York Et Boulevard Al banaâ à côté de la société Bimo,<br> Ain Sbaâ,Casablanca, Morocco</p>
+                      <p class="font-bold uppercase tracking-widest" style="color: var(--rose-dark); margin: 0 0 4px 0; font-size: clamp(11px, 2.8vw, 16px);">Sunday, July 26, 2026</p>
+                      <p class="font-bold uppercase tracking-widest" style="color: var(--rose-dark); margin: 0 0 4px 0; font-size: clamp(11px, 2.8vw, 16px);">At 3:00 PM</p>
+                      <p class="font-bold uppercase tracking-widest" style="color: var(--gold); margin: 0 0 4px 0; font-size: clamp(11px, 2.8vw, 16px);">Kassr lala laaroussa</p>
+                      <p style="color: var(--charcoal); margin: 0; font-size: clamp(10px, 2.5vw, 14px); line-height: 1.4;">Angle Boulevard New York Et Boulevard Al banaâ<br> à côté de la société Bimo,<br> Ain Sbaâ, Casablanca, Morocco</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Card 2: Célébration & Dress Code -->
               <div class="gallery-card" data-card="1">
                 <div class="invitation-card-el card-delay-2 max-w-full mx-auto">
                   
-                  <!-- Illustrations Florales Aquarelles -->
                   <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" alt="Floral decor" class="floral-bg floral-top-left" />
                   <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" alt="Floral decor" class="floral-bg floral-bottom-right" />
                   
                   <div class="card-content">
                     
-                    <!-- Celebration -->
-                    <h2 class="font-playfair text-center" style="color: var(--rose-dark); font-size: clamp(28px, 6vw, 40px); margin: 0 0 10px 0;">Celebrate With Us</h2>
+                    <h2 class="font-playfair text-center" style="color: var(--rose-dark); font-size: clamp(24px, 6vw, 40px); margin: 0 0 10px 0;">Celebrate With Us</h2>
                     
-                    <p class="text-center" style="color: var(--charcoal); font-size: 14px; line-height: 1.8; max-width: 300px; margin: 0;">
+                    <p class="text-center" style="color: var(--charcoal); font-size: clamp(12px, 3vw, 14px); line-height: 1.6; max-width: 300px; margin: 0;">
                         An evening of love, joy and cherished memories.
                     </p>
                     
                     <div class="divider"></div>
                     
-                    <!-- Dress Code -->
-                    <h2 class="font-playfair text-center" style="color: var(--rose-dark); font-size: clamp(28px, 6vw, 40px); margin: 0 0 10px 0;">Dress Code</h2>
-                    <p class="text-center" style="color: var(--charcoal); font-size: 14px; line-height: 1.6; max-width: 280px; margin: 0;">
+                    <h2 class="font-playfair text-center" style="color: var(--rose-dark); font-size: clamp(24px, 6vw, 40px); margin: 0 0 10px 0;">Dress Code</h2>
+                    <p class="text-center" style="color: var(--charcoal); font-size: clamp(12px, 3vw, 14px); line-height: 1.5; max-width: 280px; margin: 0;">
                       Traditional Moroccan attire or elegant evening wear.
                     </p>
 
-                    <div class="divider" style="margin-top: 25px;"></div>
+                    <div class="divider" style="margin-top: 20px; margin-bottom: 10px;"></div>
                     
-                    <!-- Countdown -->
                     <div id="countdown-timer" class="countdown-timer">
                       <div class="countdown-box">
                         <div id="cd-days" class="countdown-number">0</div>
@@ -575,7 +581,6 @@
     
   </div>
 
-  <!-- Controls -->
   <div class="controls-overlay" id="controls-overlay">
     <div class="pagination-container">
       <button class="dot active" data-dot="0" onclick="goToCard(0)" aria-label="Card 1"></button> 
@@ -600,7 +605,7 @@
       lucide.createIcons();
     });
 
-    const WEDDING_DATE = new Date('2026-07-26T16:00:00Z');
+    const WEDDING_DATE = new Date('2026-07-26T15:00:00Z');
     let countdownInterval = null;
 
     function updateCountdownTimer() {
