@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wedding Invitation - Maryam & Mehdi</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Palette Rose & Or */
+      --rose-dark: #A25A6B;    /* Vieux rose élégant */
+      --rose-mid: #D98C9B;     /* Rose moyen */
+      --rose-light: #FDF1F3;   /* Blush très clair pour le fond */
+      --gold: #D4AF37;         /* Or classique */
+      --gold-light: #F3E5AB;   /* Or clair */
+      --white: #ffffff;
+      --charcoal: #333333;
+      --control-h: 44px;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #faf5f5; /* Fond global doux */
+      overflow-x: hidden;
+    }
+
+    .font-amiri { font-family: 'Amiri', serif; }
+    .font-playfair { font-family: 'Playfair Display', serif; }
+
+    .app-shell {
+      position: relative;
+      width: 100%;
+      height: calc(100 * min(var(--vh, 1vh), 1vh));
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Envelope */
+    .envelope-wrapper {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      width: 100%;
+      padding: 0 16px;
+    }
+
+    .envelope-wrapper.hidden-state {
+      opacity: 0;
+      transform: translateY(-40px);
+      pointer-events: none;
+    }
+
+    .envelope {
+      position: relative;
+      width: clamp(280px, 85vw, 624px);
+      height: clamp(200px, 60vw, 445px);
+    }
+
+    @media (min-width: 640px) {
+      .envelope {
+        width: clamp(450px, 72vw, 768px);
+        height: clamp(320px, 51vw, 548px);
+      }
+    }
+
+    /* Enveloppe Rose */
+    .envelope-body {
+      position: absolute;
+      inset: 0;
+      background-color: var(--rose-dark);
+      /* Ajout des fleurs sur le corps de l'enveloppe */
+      background-image: 
+        url('https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png'),
+        url('https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png');
+      background-position: bottom left, top right;
+      background-repeat: no-repeat, no-repeat;
+      background-size: 150px, 150px;
+      /* On inverse la fleur du haut pour faire joli */
+      transform: rotate(0deg); 
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 40px rgba(0,0,0,0.15);
+    }
+
+    .envelope-seal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: clamp(80px, 20vw, 120px);
+      height: clamp(80px, 20vw, 120px);
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid var(--gold-light);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      transition: opacity 0.6s ease, transform 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .envelope-seal:hover {
+      transform: translateX(-50%) scale(1.1);
+    }
+
+    .envelope-seal.fade-out {
+      opacity: 0;
+    }
+
+    .seal-text {
+      color: var(--white);
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(14px, 3vw, 20px);
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.2;
+      letter-spacing: 2px;
+    }
+
+    .envelope-inner {
+      position: absolute;
+      inset: 0;
+      background: var(--rose-light);
+      z-index: 1;
+    }
+
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 55%;
+      background: #8b4a59; /* Ton légèrement plus foncé pour le rabat */
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      z-index: 3;
+      transform-origin: top center;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .envelope-flap.opened {
+      transform: rotateX(180deg);
+    }
+
+    .envelope-letter {
+      position: absolute;
+      top: 10%;
+      left: 10%;
+      width: 80%;
+      height: 50%;
+      background: white;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+    }
+
+    .envelope-letter.slide-out {
+      opacity: 1;
+      transform: translateY(-80px);
+    }
+
+    /* Overlay Block */
+    .overlay-block {
+      position: absolute;
+      bottom: 12px;
+      right: 0;
+      width: clamp(180px, 50vw, 380px);
+      background: var(--gold);
+      color: var(--white);
+      padding: clamp(12px, 3vw, 16px);
+      z-index: 25;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      transition: opacity 0.6s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: clamp(160px, 40vw, 240px);
+      border-radius: 8px 0 0 8px;
+    }
+
+    .overlay-block.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      25% { transform: translateX(-4px) rotate(-1deg); }
+      75% { transform: translateX(4px) rotate(1deg); }
+    }
+
+    .overlay-block:hover {
+      animation: wiggle 0.4s ease-in-out infinite;
+    }
+
+    /* Cards */
+    .cards-container {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .cards-container.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .gallery-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .gallery-track {
+      display: flex;
+      gap: clamp(12px, 3vw, 20px);
+      overflow: visible;
+      position: relative;
+      justify-content: flex-start;
+      will-change: transform;
+    }
+
+    .gallery-card {
+      flex: 0 0 85%;
+      min-width: 85%;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .invitation-card-el {
+      background: var(--rose-light);
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      box-shadow: 0 12px 40px rgba(162, 90, 107, 0.15);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s ease;
+      width: 100%;
+      min-height: clamp(480px, 80vw, 650px);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .invitation-card-el:hover {
+      transform: scale(1.02) !important;
+      box-shadow: 0 15px 50px rgba(162, 90, 107, 0.25) !important;
+      z-index: 20 !important;
+    }
+
+    /* Décorations Florales (Aquarelle PNG) */
+    .floral-bg {
+      position: absolute;
+      width: clamp(120px, 30vw, 180px);
+      pointer-events: none;
+      opacity: 0.95;
+      z-index: 0;
+      object-fit: contain;
+    }
+    .floral-top-left { 
+      top: -15px; 
+      left: -15px; 
+      transform: rotate(0deg); 
+    }
+    .floral-bottom-right { 
+      bottom: -15px; 
+      right: -15px; 
+      transform: rotate(180deg); 
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 1;
+      padding: clamp(24px, 6vw, 40px);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quranic-verse {
+      color: var(--gold);
+      text-align: center;
+      font-size: clamp(18px, 3vw, 24px);
+      line-height: 1.8;
+      padding: 15px;
+      margin: 10px auto;
+      max-width: 90%;
+      border-top: 1px solid rgba(212, 175, 55, 0.4);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.4);
+    }
+
+    .divider {
+      width: 50%;
+      height: 1px;
+      background: var(--gold);
+      margin: 20px auto;
+      opacity: 0.4;
+    }
+
+    /* Countdown */
+    .countdown-timer {
+      display: flex;
+      justify-content: center;
+      gap: clamp(8px, 2vw, 16px);
+      margin-top: 20px;
+    }
+
+    .countdown-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: clamp(56px, 15vw, 75px);
+      height: clamp(56px, 15vw, 75px);
+      background: var(--white);
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(162, 90, 107, 0.05);
+    }
+
+    .countdown-number {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(20px, 5vw, 28px);
+      font-weight: 700;
+      color: var(--rose-dark);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .countdown-label {
+      font-size: clamp(9px, 2vw, 11px);
+      color: var(--gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Controls Overlay */
+    .controls-overlay {
+      position: fixed;
+      bottom: clamp(12px, 3vw, 24px);
+      left: clamp(8px, 2vw, 24px);
+      right: clamp(8px, 2vw, 24px);
+      z-index: 50;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .controls-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .controls-overlay > * { pointer-events: auto; }
+
+    .nav-buttons-container { 
+      position: absolute;
+      right: 0;
+      display: flex; 
+      gap: clamp(8px, 2vw, 12px); 
+    }
+
+    .nav-button-fixed {
+      width: var(--control-h);
+      height: var(--control-h);
+      border: none;
+      border-radius: 50%;
+      background: var(--rose-dark);
+      color: var(--white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+    }
+
+    .nav-button-fixed:hover:not(:disabled) { transform: scale(1.05); background: var(--rose-mid); }
+    .nav-button-fixed:disabled { opacity: 0; pointer-events: none; }
+
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid var(--rose-dark);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active { background: var(--rose-dark); transform: scale(1.2); }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-delay-1 { animation: fadeInUp 0.6s ease 0.1s both; }
+    .card-delay-2 { animation: fadeInUp 0.6s ease 0.3s both; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    
+    <!-- FLEURS EN ARRIÈRE-PLAN (NOUVEAU) -->
+    <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" 
+         style="position: absolute; top: 0; left: 0; width: 250px; opacity: 0.6; pointer-events: none; z-index: 0;" />
+         
+    <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" 
+         style="position: absolute; bottom: 0; right: 0; width: 250px; opacity: 0.6; pointer-events: none; z-index: 0; transform: rotate(180deg);" />
+         
+    <!-- Envelope -->
+    <div class="envelope-wrapper" id="envelope-wrapper" onclick="openEnvelope()">
+      <div class="envelope" id="envelope">
+        <div class="envelope-seal">
+          <span class="seal-text">SAVE<br><span style="font-size: 0.6em">THE</span><br>DATE</span>
+        </div>
+        <div class="envelope-flap" id="envelope-flap"></div>
+        <div class="envelope-letter">
+          <span class="font-playfair" style="color: var(--rose-dark); font-size: 24px; font-weight: 700; letter-spacing: 1px;">Invitation</span>
+        </div>
+        <div class="envelope-inner"></div>
+        <div class="envelope-body"></div>
+      </div>
+      <div class="overlay-block" id="overlay-block">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: clamp(16px, 5vw, 32px);">
+          <p class="text-xs font-bold" style="letter-spacing: 0.1em; margin: 0;">TAP TO OPEN</p>
+        </div>
+        <h3 class="font-playfair" style="font-size: clamp(32px, 7vw, 48px); margin: 0; line-height: 1.1; color: var(--white);">Celebrate<br>Our Wedding</h3>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="cards-container" id="cards-container">
+      <div class="px-4 h-full flex items-center" style="width: 100%;">
+        <div class="gallery-wrapper">
+          <div class="relative">
+            <div class="gallery-track" id="gallery-track">
+              
+              <!-- Card 1: Invitation -->
+              <div class="gallery-card" data-card="0">
+                <div class="invitation-card-el card-delay-1 max-w-full mx-auto">
+                  
+                  <!-- Illustrations Florales Aquarelles -->
+                  <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" alt="Floral decor" class="floral-bg floral-top-left" />
+                  <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" alt="Floral decor" class="floral-bg floral-bottom-right" />
+                  
+                  <div class="card-content">
+                    <p class="text-xs font-bold uppercase tracking-widest text-center" style="color: var(--rose-dark); margin-bottom: 15px; letter-spacing: 2px;">
+                      Together with their families
+                    </p>
+                    
+                    <h1 class="font-playfair text-center" style="color: var(--rose-dark); margin: 0; font-size: clamp(50px, 10vw, 80px); line-height: 1.1;">
+                      Maryam<br><span style="font-size: 0.5em; color: var(--gold); font-family: 'Montserrat', sans-serif;">&</span><br>Mehdi
+                    </h1>
+                    
+                    <p class="text-xs font-bold uppercase tracking-widest text-center" style="color: var(--rose-dark); margin: 15px 0 10px 0; letter-spacing: 2px;">
+                      Invite you to celebrate their wedding
+                    </p>
+
+                    <div class="quranic-verse font-amiri" dir="rtl">
+                      « وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوا إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً »
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: auto;">
+                      <p class="font-bold uppercase tracking-widest" style="color: var(--rose-dark); margin: 0 0 8px 0; font-size: 16px;">Sunday, July 26, 2026</p>
+                      <p class="font-bold uppercase tracking-widest" style="color: var(--rose-dark); margin: 0 0 8px 0; font-size: 16px;">At 3:00 PM</p>
+                      <p class="font-bold uppercase tracking-widest" style="color: var(--gold); margin: 0 0 8px 0; font-size: 16px;"> Kassr lala laaroussa</p>
+                      <p style="color: var(--charcoal); margin: 0; font-size: 14px; line-height: 1.6;">Angle Boulevard New York Et Boulevard Al banaâ à côté de la société Bimo,<br> Ain Sbaâ,Casablanca, Morocco</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2: Célébration & Dress Code -->
+              <div class="gallery-card" data-card="1">
+                <div class="invitation-card-el card-delay-2 max-w-full mx-auto">
+                  
+                  <!-- Illustrations Florales Aquarelles -->
+                  <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" alt="Floral decor" class="floral-bg floral-top-left" />
+                  <img src="https://static.vecteezy.com/system/resources/thumbnails/066/726/862/small/pink-watercolor-floral-corner-bouquet-isolated-on-transparent-background-png.png" alt="Floral decor" class="floral-bg floral-bottom-right" />
+                  
+                  <div class="card-content">
+                    
+                    <!-- Celebration -->
+                    <h2 class="font-playfair text-center" style="color: var(--rose-dark); font-size: clamp(28px, 6vw, 40px); margin: 0 0 10px 0;">Celebrate With Us</h2>
+                    
+                    <p class="text-center" style="color: var(--charcoal); font-size: 14px; line-height: 1.8; max-width: 300px; margin: 0;">
+                        An evening of love, joy and cherished memories.
+                    </p>
+                    
+                    <div class="divider"></div>
+                    
+                    <!-- Dress Code -->
+                    <h2 class="font-playfair text-center" style="color: var(--rose-dark); font-size: clamp(28px, 6vw, 40px); margin: 0 0 10px 0;">Dress Code</h2>
+                    <p class="text-center" style="color: var(--charcoal); font-size: 14px; line-height: 1.6; max-width: 280px; margin: 0;">
+                      Traditional Moroccan attire or elegant evening wear.
+                    </p>
+
+                    <div class="divider" style="margin-top: 25px;"></div>
+                    
+                    <!-- Countdown -->
+                    <div id="countdown-timer" class="countdown-timer">
+                      <div class="countdown-box">
+                        <div id="cd-days" class="countdown-number">0</div>
+                        <div class="countdown-label">Days</div>
+                      </div>
+                      <div class="countdown-box">
+                        <div id="cd-hours" class="countdown-number">0</div>
+                        <div class="countdown-label">Hours</div>
+                      </div>
+                      <div class="countdown-box">
+                        <div id="cd-minutes" class="countdown-number">0</div>
+                        <div class="countdown-label">Minutes</div>
+                      </div>
+                      <div class="countdown-box">
+                        <div id="cd-seconds" class="countdown-number">0</div>
+                        <div class="countdown-label">Seconds</div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+
+  <!-- Controls -->
+  <div class="controls-overlay" id="controls-overlay">
+    <div class="pagination-container">
+      <button class="dot active" data-dot="0" onclick="goToCard(0)" aria-label="Card 1"></button> 
+      <button class="dot" data-dot="1" onclick="goToCard(1)" aria-label="Card 2"></button> 
+    </div>
+    <div class="nav-buttons-container">
+      <button class="nav-button-fixed" id="nav-prev" onclick="prevCard()" aria-label="Previous">
+        <i data-lucide="chevron-left" style="width: 20px; height: 20px;"></i>
+      </button>
+      <button class="nav-button-fixed" id="nav-next" onclick="nextCard()" aria-label="Next">
+        <i data-lucide="chevron-right" style="width: 20px; height: 20px;"></i>
+      </button> 
+    </div>
+  </div>
+
+  <script>
+    let envelopeOpened = false;
+    let currentCard = 0;
+    const totalCards = 2;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
+
+    const WEDDING_DATE = new Date('2026-07-26T16:00:00Z');
+    let countdownInterval = null;
+
+    function updateCountdownTimer() {
+      const now = new Date();
+      const diff = WEDDING_DATE - now;
+      let days = 0, hours = 0, minutes = 0, seconds = 0;
+      
+      if (diff > 0) {
+        days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      }
+      
+      document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+      document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('cd-minutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('cd-seconds').textContent = String(seconds).padStart(2, '0');
+    }
+
+    function startCountdownTimer() {
+      if (countdownInterval) clearInterval(countdownInterval);
+      updateCountdownTimer();
+      countdownInterval = setInterval(updateCountdownTimer, 1000);
+    }
+
+    function updateGalleryView() {
+      const track = document.getElementById('gallery-track');
+      const wrapper = track.parentElement;
+      const wrapperWidth = wrapper.offsetWidth;
+      const cardWidthPx = wrapperWidth * 0.85;
+      const gapPx = parseFloat(getComputedStyle(track).gap) || 16;
+      
+      const targetCardCenter = (currentCard * (cardWidthPx + gapPx)) + (cardWidthPx / 2);
+      const translateX = (wrapperWidth / 2) - targetCardCenter;
+      
+      track.style.transform = `translateX(${translateX}px)`;
+      
+      document.getElementById('nav-prev').disabled = currentCard === 0;
+      document.getElementById('nav-next').disabled = currentCard === totalCards - 1;
+      
+      document.querySelectorAll('.dot').forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === currentCard);
+      });
+    }
+
+    window.addEventListener('resize', () => { 
+      if (envelopeOpened) updateGalleryView(); 
+    });
+
+    function nextCard() { 
+      if (currentCard < totalCards - 1) { 
+        currentCard++; 
+        updateGalleryView(); 
+      } 
+    }
+    
+    function prevCard() { 
+      if (currentCard > 0) { 
+        currentCard--; 
+        updateGalleryView(); 
+      } 
+    }
+    
+    function goToCard(i) { 
+      currentCard = Math.max(0, Math.min(i, totalCards - 1)); 
+      updateGalleryView(); 
+    }
+
+    function openEnvelope() {
+      if (envelopeOpened) return;
+      envelopeOpened = true;
+      
+      const wrapper = document.getElementById('envelope-wrapper');
+      const flap = document.getElementById('envelope-flap');
+      const seal = document.querySelector('.envelope-seal');
+      const letter = document.querySelector('.envelope-letter');
+      const cards = document.getElementById('cards-container');
+      const overlay = document.getElementById('controls-overlay');
+      const overlayBlock = document.getElementById('overlay-block');
+      
+      currentCard = 0;
+      seal.classList.add('fade-out');
+      overlayBlock.classList.add('fade-out');
+      flap.classList.add('opened');
+      
+      setTimeout(() => { letter.classList.add('slide-out'); }, 100);
+      
+      setTimeout(() => {
+        wrapper.classList.add('hidden-state');
+        cards.classList.add('visible');
+        overlay.classList.add('visible');
+        updateGalleryView();
+        startCountdownTimer();
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
